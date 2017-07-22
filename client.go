@@ -1,4 +1,4 @@
-package magicclient
+package gomagicclient
 
 import (
 	"bytes"
