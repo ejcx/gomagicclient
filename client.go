@@ -42,7 +42,7 @@ type MagicSend struct {
 }
 
 func magicRequest(method, route, email, apikey string, r io.Reader) (*http.Request, error) {
-	req, err := http.NewRequest(method, "http://localhost:8000"+route, r)
+	req, err := http.NewRequest(method, "https://hexauth.com"+route, r)
 	if err != nil {
 		return nil, fmt.Errorf("Could not create magic request: %s", err)
 	}

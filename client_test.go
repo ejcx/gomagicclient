@@ -11,12 +11,12 @@ var (
 
 func init() {
 	email = "e@ejj.io"
-	apikey = "8a87ff6c3ca402705d913bf13a0aec42fa4981835d901ea3"
+	apikey = "c2fbc139886b860cac261e0bc00a7e767b9e011299b289f7"
 }
 
 func TestSend(t *testing.T) {
 	client := NewEx(email, apikey, nil)
-	success, err := client.Send("e@ejj.io", "poopfeast", "http://localhost:8080/callback")
+	success, err := client.Send("e@ejj.io", "poopfeast", "https://hexauth.com/callback")
 	if err != nil {
 		t.Errorf("Could not send: %s", err)
 	}
