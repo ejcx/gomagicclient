@@ -1,5 +1,9 @@
 package gomagicclient
 
+// gomagicclient is used to send magic links to users. magic links
+// are attestations that a user owns the email address that they
+// claim to.
+
 import (
 	"bytes"
 	"encoding/json"
@@ -47,8 +51,11 @@ func magicRequest(method, route, email, apikey string, r io.Reader) (*http.Reque
 	return req, err
 }
 
-func (m *MagicClient) Validate(callback string) (*MagicSignin, error) {
-	req, err := magicRequest("GET", "/validate/"+callback, m.e, m.k, nil)
+// Validate is used to validate a code that a user provides to your
+// callback url. If successful, it will return an object that
+// contains the user's email and the time they signed in.
+func (m *MagicClient) Validate(code string) (*MagicSignin, error) {
+	req, err := magicRequest("GET", "/validate/"+code, m.e, m.k, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +67,6 @@ func (m *MagicClient) Validate(callback string) (*MagicSignin, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(string(cb))
 	var s MagicSignin
 	err = json.Unmarshal(cb, &s)
 	if err != nil {
@@ -69,6 +75,9 @@ func (m *MagicClient) Validate(callback string) (*MagicSignin, error) {
 	return &s, nil
 }
 
+// Send is used to send a magic link to a user. It requires
+// you to set your company name, and the URL that the user
+// will return back to your callback with a validation code.
 func (m *MagicClient) Send(ToEmail string, CompanyName string, CallbackURL string) (bool, error) {
 	ms := &MagicSend{
 		ToEmail:     ToEmail,
