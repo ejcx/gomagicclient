@@ -7,6 +7,7 @@ package gomagicclient
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -42,7 +43,7 @@ type MagicSend struct {
 }
 
 func magicRequest(method, route, email, apikey string, r io.Reader) (*http.Request, error) {
-	req, err := http.NewRequest(method, "https://hexauth.com"+route, r)
+	req, err := http.NewRequest(method, "https://eventlog.io"+route, r)
 	if err != nil {
 		return nil, fmt.Errorf("Could not create magic request: %s", err)
 	}
@@ -72,7 +73,10 @@ func (m *MagicClient) Validate(code string) (*MagicSignin, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &s, nil
+	if s.Verified {
+		return &s, nil
+	}
+	return &s, errors.New("Could not validate customer code")
 }
 
 // Send is used to send a magic link to a user. It requires
@@ -114,7 +118,7 @@ func n(k string, e string, c *http.Client) *MagicClient {
 	if c == nil {
 		c = &http.Client{}
 	}
-	return &MagicClient{k: k, e: e, c: &http.Client{}}
+	return &MagicClient{k: k, e: e, c: c}
 }
 
 // New generates a new MagicClient by loading
